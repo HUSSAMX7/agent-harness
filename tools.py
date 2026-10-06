@@ -1,6 +1,7 @@
 import os
 import subprocess
 
+from context import note_read
 from skills import read_skill
 
 
@@ -64,7 +65,9 @@ TOOLS = [BASH_TOOL, READ_FILE_TOOL, READ_SKILL_TOOL]
 def read_file(path: str) -> str:
     try:
         with open(path, "r", encoding="utf-8") as file:
-            return file.read()
+            content = file.read()
+        note_read(path)
+        return content
     except (OSError, UnicodeError) as exc:
         return f"Error reading {path}: {exc}"
 

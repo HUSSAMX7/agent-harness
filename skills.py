@@ -2,6 +2,8 @@ from pathlib import Path
 
 import yaml
 
+from context import note_read
+
 
 SKILL_DIRS = [
     Path.cwd() / ".agents" / "skills",
@@ -33,4 +35,10 @@ def read_skill(name: str) -> str:
     """Open a skill and return its full instructions."""
     if name not in SKILLS:
         return f"No skill named '{name}'."
-    return SKILLS[name]["path"].read_text(encoding="utf-8")
+    path = SKILLS[name]["path"]
+    try:
+        content = path.read_text(encoding="utf-8")
+        note_read(path)
+        return content
+    except (OSError, UnicodeError) as exc:
+        return f"Error reading skill {name}: {exc}"

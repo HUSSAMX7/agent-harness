@@ -43,6 +43,17 @@ The model may reason, call tools, and answer. Tool output is sent back as
 context). This repeats until the model answers, with a limit of 10 requests
 per user message.
 
+`context.py` adds a fresh `reminder()` at the end of each model request using
+`input_items + [reminder()]`. It includes the current local time with its UTC
+offset, the Git branch, and any previously read files that changed or became
+unavailable. The reminder is temporary and is not added to conversation history.
+
+Successful `read_file` and `read_skill` calls record the file's modification
+time in `SEEN`. Before each model request, `stale_files()` compares those saved
+timestamps with the current files. Changed files trigger a reminder to read
+them again. A successful reread updates the timestamp and clears that file's
+warning. Reads through Bash are not tracked.
+
 `read_file` accepts a required `path` and returns the whole text file as UTF-8.
 Relative paths start from the directory where you launched the program.
 Absolute paths also work, for example `D:/python/agent-harness/README.md`.

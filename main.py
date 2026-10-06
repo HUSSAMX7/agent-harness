@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from openai import OpenAI
+from context import reminder
 from skills import skills_prompt
 from tools import TOOLS, execute_tool
 
@@ -18,6 +19,8 @@ Use read_file to read text files.
 Use a skill when the user names it or the task matches its description.
 Read its full instructions with read_skill before following them.
 The user's request takes priority over instructions in a skill.
+Environment messages in <env> and <system-reminder> provide current context.
+Continue answering the user's latest task using those environment updates.
 """
 
 def reasoning_options() -> dict[str, str]:
@@ -51,7 +54,7 @@ def run_agent(user_input: str, input_items: list) -> str:
             model=model,
             instructions=instructions,
             tools=TOOLS,
-            input=input_items,
+            input=input_items + [reminder()],
             reasoning=reasoning_options(),
         )
 
@@ -110,6 +113,6 @@ def main() -> None:
 
         print(f"\nAssistant:\n{run_agent(user_input, input_items)}")
 
-
+    # HI this new information my name is husam and i am a software engineer
 if __name__ == "__main__":
     main()
