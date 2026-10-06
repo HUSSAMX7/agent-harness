@@ -3,6 +3,7 @@ import subprocess
 
 from context import note_read
 from skills import read_skill
+from todo import TODO_SCHEMA, write_todos
 
 
 BASH_TOOL = {
@@ -59,7 +60,7 @@ READ_SKILL_TOOL = {
     "strict": False,
 }
 
-TOOLS = [BASH_TOOL, READ_FILE_TOOL, READ_SKILL_TOOL]
+TOOLS = [BASH_TOOL, READ_FILE_TOOL, READ_SKILL_TOOL, TODO_SCHEMA]
 
 
 def read_file(path: str) -> str:
@@ -99,4 +100,6 @@ def execute_tool(name: str, arguments: dict) -> str:
         return read_file(arguments["path"])
     if name == "read_skill":
         return read_skill(arguments["name"])
+    if name == "write_todos":
+        return write_todos(arguments.get("todos"))
     return f"Error: unknown tool {name}"

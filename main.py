@@ -19,7 +19,13 @@ Use read_file to read text files.
 Use a skill when the user names it or the task matches its description.
 Read its full instructions with read_skill before following them.
 The user's request takes priority over instructions in a skill.
-Environment messages in <env> and <system-reminder> provide current context.
+Use write_todos for tasks with multiple meaningful steps; skip it for simple tasks.
+Keep the plan concise, with at most one task in_progress.
+Update it when a step starts, finishes, or the approach changes, not after every tool call.
+Only mark a task done after completing and verifying its outcome.
+Replace the plan when starting a new task; clear it if the new task needs no plan.
+Environment messages in <env>, <system-reminder>, and <todos> provide current context.
+The <todos> block contains the current plan; older tool results may contain previous plans.
 Continue answering the user's latest task using those environment updates.
 """
 

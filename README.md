@@ -54,6 +54,25 @@ timestamps with the current files. Changed files trigger a reminder to read
 them again. A successful reread updates the timestamp and clears that file's
 warning. Reads through Bash are not tracked.
 
+`todo.py` keeps the current plan in memory. For multi-step tasks, the model calls
+`write_todos` with the whole list of tasks, each containing `content`, `activeForm`,
+and a `status` of `pending`, `in_progress`, or `done`. At most one task may be
+`in_progress`; all-pending and all-done lists are also valid. Invalid updates
+return an error without replacing the current plan. An empty list clears it.
+
+`reminder()` includes the latest non-empty plan in a `<todos>` block before every
+model request. The block is temporary; tool calls and their results still stay
+in conversation history. Tool output displays the updated plan as `[ ]`, `[~]`,
+and `[x]` in the terminal. The plan resets when the program restarts.
+`active_form()` returns the active task's `activeForm` text, or `thinking` if none
+is active; it is available for a future spinner, with no spinner UI added yet.
+
+Try a read-only planning task:
+
+```powershell
+uv run main.py "Use write_todos to plan reading README.md and pyproject.toml, read both files, mark each step done, then summarize them."
+```
+
 `read_file` accepts a required `path` and returns the whole text file as UTF-8.
 Relative paths start from the directory where you launched the program.
 Absolute paths also work, for example `D:/python/agent-harness/README.md`.

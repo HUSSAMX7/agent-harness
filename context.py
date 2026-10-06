@@ -2,6 +2,8 @@ import subprocess
 from datetime import datetime
 from pathlib import Path
 
+from todo import todos_prompt
+
 
 SEEN: dict[Path, int] = {}
 
@@ -52,6 +54,7 @@ def git_branch() -> str:
 
 
 def reminder() -> dict[str, str]:
+    plan = todos_prompt()
     return {
         "role": "user",
         "content": (
@@ -59,5 +62,6 @@ def reminder() -> dict[str, str]:
             f"time: {datetime.now().astimezone().isoformat(timespec='seconds')}\n"
             f"git branch: {git_branch()}\n"
             "</env>" + stale_note()
+            + (f"\n<todos>\n{plan}\n</todos>" if plan else "")
         ),
     }
